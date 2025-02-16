@@ -1,0 +1,100 @@
+---
+title: "ARM"
+output: html_document
+date: "2025-02-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(viridis)
+library(arules)
+library(TSP)
+library(data.table)
+library(arulesViz)
+library(htmlwidgets)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r}
+genres <- read.transactions("C:/Users/uttar/OneDrive/Desktop/ML/ARM/transactions.csv", rm.duplicates = FALSE, format = "basket", sep = ",", cols =1)
+genres
+```
+
+```{r}
+rules_c <- apriori(data = genres, parameter = list(support = 0.05, confidence = 0.8, minlen = 2))
+```
+
+```{r}
+inspect(head(sort(rules_c, by = "support"),15))
+```
+
+```{r}
+inspect(head(sort(rules_c, by = "confidence"),15))
+```
+
+```{r}
+inspect(head(sort(rules_c, by = "lift"),15))
+```
+
+
+```{r}
+itemFrequencyPlot(genres, topN=20, type = "absolute")
+```
+
+
+```{r}
+SortedRulesG <- sort(rules_c, by="confidence", decreasing = TRUE)
+```
+
+```{r}
+subruleG <- head(sort(SortedRulesG, by="confidence"),20)
+```
+
+```{r}
+inspect(subruleG)
+```
+
+```{r}
+plot(subruleG, method = "graph", engine = "interactive")
+```
+
+```{r}
+saveWidget(plot(subruleG, method = "graph", engine = "htmlwidget"), "ARM_NetworkPlot1.html", selfcontained = TRUE)
+plot(subruleG, method = "graph",engine="htmlwidget")
+```
+
+
+```{r}
+rules_s <- apriori(data = genres, parameter = list(support = 0.05, confidence = 0.8, minlen = 1.2))
+```
+
+```{r}
+inspect(head(sort(rules_s, by = "lift"),15))
+```
+
+```{r}
+SortedRuleC <- sort(rules_s, by="lift", decreasing = TRUE)
+```
+
+```{r}
+subruleC <- head(sort(SortedRuleC, by="lift"),25)
+```
+
+```{r}
+inspect(subruleC)
+```
+
+```{r}
+plot(subruleC, method = "graph", engine = "interactive")
+```
+
+```{r}
+saveWidget(plot(subruleC, method = "graph", engine = "htmlwidget"), "ARM_NetworkPlot2.html", selfcontained = TRUE)
+plot(subruleC, method = "graph",engine="htmlwidget")
+```
